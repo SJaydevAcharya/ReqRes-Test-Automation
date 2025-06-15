@@ -1,0 +1,526 @@
+{
+	"info": {
+		"_postman_id": "03a5fe6f-16f4-4005-9a38-026d64ce2d6c",
+		"name": "Reqres_Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "34399280",
+		"_collection_link": "https://www.postman.com/payload-geoscientist-33886177/workspace/22cac6d8-41ba-40e9-9e40-95a4241f5797/collection/34399280-03a5fe6f-16f4-4005-9a38-026d64ce2d6c?action=share&source=collection_link&creator=34399280"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}?page=2",
+							"host": [
+								"{{base_url}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_Single_User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}api/users/:user",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"users",
+								":user"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single use not found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/:user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":user"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "23"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create_user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let res = pm.response.json();\r",
+									"\r",
+									"// Validate status code 201 (Created)\r",
+									"pm.test(\"Status code is 201\", () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"// Validate generated username\r",
+									"pm.test(\"Name matches generated username\", () => {\r",
+									"    const expectedUsername = pm.environment.get(\"username\");\r",
+									"    pm.expect(res.name).to.eql(expectedUsername);\r",
+									"});\r",
+									"\r",
+									"// Validate generated job title\r",
+									"pm.test(\"Job matches generated job\", () => {\r",
+									"    const expectedJob = pm.environment.get(\"job\");\r",
+									"    pm.expect(res.job).to.eql(expectedJob);\r",
+									"});\r",
+									"\r",
+									"// Validate generated user ID\r",
+									"pm.test(\"ID matches generated user_id\", () => {\r",
+									"    const expectedId = pm.environment.get(\"user_id\");\r",
+									"    pm.expect(res.id).to.eql(expectedId);\r",
+									"});\r",
+									"\r",
+									"// Validate createdAt timestamp presence and match\r",
+									"pm.test(\"createdAt is present and valid ISO string\", () => {\r",
+									"    pm.expect(res.createdAt).to.exist;\r",
+									"    pm.expect(res.createdAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d+Z$/);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random username\r",
+									"let username = `user_${Math.floor(Math.random() * 10000)}`;\r",
+									"\r",
+									"// Random job titles\r",
+									"let jobs = [\"QA Tester\", \"Developer\", \"Product Manager\", \"DevOps Engineer\", \"UX Designer\"];\r",
+									"let job = jobs[Math.floor(Math.random() * jobs.length)];\r",
+									"\r",
+									"// Unique ID using UUID-like format\r",
+									"let id = crypto.randomUUID();\r",
+									"\r",
+									"// Current timestamp in ISO format\r",
+									"let createdAt = new Date().toISOString();\r",
+									"\r",
+									"// Set variables for use in request body and validation\r",
+									"pm.environment.set(\"username\", username);\r",
+									"pm.environment.set(\"job\", job);\r",
+									"pm.environment.set(\"user_id\", id);\r",
+									"pm.environment.set(\"created_at\", createdAt);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{username}}\",\r\n  \"job\": \"{{job}}\",\r\n  \"id\": \"{{user_id}}\",\r\n  \"createdAt\": \"{{created_at}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/users"
+					},
+					"response": []
+				},
+				{
+					"name": "user_update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let res = pm.response.json();\r",
+									"\r",
+									"// Check status code\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200); // 200 = Success\r",
+									"});\r",
+									"\r",
+									"// Validate name and job\r",
+									"pm.test(\"Name is updated correctly\", function () {\r",
+									"    pm.expect(res.name).to.eql(\"morpheus\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Job is updated correctly\", function () {\r",
+									"    pm.expect(res.job).to.eql(\"Senior QA Engineer\");\r",
+									"});\r",
+									"\r",
+									"// Check if updatedAt exists\r",
+									"pm.test(\"updatedAt is present\", function () {\r",
+									"    pm.expect(res.updatedAt).to.exist;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"morpheus\",\r\n  \"job\": \"Senior QA Engineer\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Status code validation\r",
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"// Response body should be empty\r",
+									"pm.test(\"Response body is empty\", function () {\r",
+									"    pm.expect(pm.response.text()).to.eql(\"\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Validating_Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Email is correct\", function () {\r",
+									"    pm.expect(res.data.email).to.eql(\"janet.weaver@reqres.in\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"First name is Janet\", function () {\r",
+									"    pm.expect(res.data.first_name).to.eql(\"Janet\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Last name is Weaver\", function () {\r",
+									"    pm.expect(res.data.last_name).to.eql(\"Weaver\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/:user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								":user"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Valid_Login_Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Token is present\", () => {\r",
+									"    pm.expect(res.token).to.exist;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"eve.holt@reqres.in\",\r\n  \"password\": \"cityslicka\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Valid_User_Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"ID and token are present\", () => {\r",
+									"    pm.expect(res.id).to.exist;\r",
+									"    pm.expect(res.token).to.exist;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}"
+						},
+						"url": "{{base_url}}/api/register"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative_Tests",
+			"item": [
+				{
+					"name": "Expect_404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body is empty\", function () {\r",
+									"    pm.expect(pm.response.text()).to.eql(\"{}\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/23"
+					},
+					"response": []
+				},
+				{
+					"name": "Register_Without_Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    pm.expect(res.error).to.eql(\"Missing password\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"sydney@fife\"\r\n}\r\n"
+						},
+						"url": "{{base_url}}/api/register"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
