@@ -1,46 +1,95 @@
+
 # Reqres API Testing Project
 
-## Import Postman Collection and Environments
+This project tests the [Reqres API](https://reqres.in) using Postman and Newman. It includes organized test folders, multiple environments, and automated test execution with detailed HTML reports.
 
-1. Open Postman.
-2. Import the collection file from `/collections/Reqres_Project.postman_collection.json`.
-3. Import the environment files from the `/environments/`.
+---
 
-## Configure Environment Variables
+## 📦 Folder Structure
 
-1. Open each environment in Postman.
-2. Ensure the API keys and base URLs are correct.
-3. Store API keys and sensitive data as environment variables.
-
-## Running Tests
-
-### Using Postman GUI
-
-- Select the environment (User, Negative_Test, or Auth).
-- Run individual requests or the entire collection.
-- View test results in the Postman Test Results tab.
-
-### Using Newman CLI (Command Line)
-
-Make sure Newman is installed globally:
-
-```bash
-npm install -g newman newman-reporter-html
+```
+├── collections/
+│   └── Reqres_Project.postman_collection.json
+├── environments/
+│   ├── user_env.json
+│   └── auth_env.json
+├── reports/
+│   └── *.html (auto-generated reports)
+├── run_newman.sh
+├── run_newman.ps1
+└── README.md
 ```
 
-Run tests with the desired environment:
+---
+
+## 🚀 How to Use
+
+### 1. Import in Postman
+
+- Open Postman.
+- Import the collection from `collections/rew_collection.json`.
+- Import environments from the `environments/` folder (`user_env.json`, `auth_env.json`).
+
+### 2. Running Tests Manually (Postman GUI)
+
+- Choose an environment: `User`, `Auth`, or `Negative_Tests`.
+- Run specific folders or the full collection.
+- View test results in the **Test Results** tab.
+
+---
+
+## 🧪 Running Tests with Newman (CLI)
+
+### 📦 Install Newman & HTML Extra Reporter
 
 ```bash
-newman run collections/Reqres_Project.postman_collection.json -e environments/Dev.postman_environment.json -r cli,html --reporter-html-export reports/dev_report.html
+npm install -g newman newman-reporter-htmlextra
 ```
 
-## Key Features
+### 🖥️ Automated Scripts
 
-- **Environment Management:** Easily switch between multiple environments to test different deployment stages.
-- **Folder-based Organization:** Clear segregation of test requests for maintainability and scalability.
-- **Automated CLI Testing:** Integration with Newman allows running tests from the command line and generating HTML reports.
-- **Negative Testing:** Ensures API robustness by testing invalid inputs and checking for correct error responses.
+Use the included scripts to run tests and auto-generate HTML reports:
 
-## Contact
+#### 🔧 Bash (Linux/macOS)
 
-For questions or contributions, please contact **S. Jaydev Acharya**.
+```bash
+./run_newman.sh
+```
+
+#### 🪟 PowerShell (Windows)
+
+```powershell
+.
+un_newman.ps1
+```
+
+These scripts:
+- Run the collection with different folders (User, Auth, Negative_Tests)
+- Use the correct environments (`user_env.json` and `auth_env.json`)
+- Generate detailed dashboard-style HTML reports
+
+📌 **Note:**  
+Make sure all `.json` files (collection and environments) are in the same folder as the script or update paths accordingly.
+
+---
+
+## 📊 Reports
+
+- Generated reports are saved inside the `reports/` folder.
+- Open any `.html` file in your browser to view detailed test results.
+
+---
+
+## ✅ Features
+
+- 🔄 Multiple Environments (`user_env.json`, `auth_env.json`)
+- 📁 Folder-based Test Organization (`User`, `Auth`, `Negative_Tests`)
+- ⚠️ Negative Testing Support
+- 💻 CLI Integration via Newman
+- 📈 HTML Extra Reports for visual dashboards
+
+---
+
+## 📬 Contact
+
+For questions or suggestions, feel free to reach out to **S. Jaydev Acharya**.

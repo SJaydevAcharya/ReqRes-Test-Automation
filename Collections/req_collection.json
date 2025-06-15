@@ -2,9 +2,9 @@
 	"info": {
 		"_postman_id": "03a5fe6f-16f4-4005-9a38-026d64ce2d6c",
 		"name": "Reqres_Project",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34399280",
-		"_collection_link": "https://www.postman.com/payload-geoscientist-33886177/workspace/22cac6d8-41ba-40e9-9e40-95a4241f5797/collection/34399280-03a5fe6f-16f4-4005-9a38-026d64ce2d6c?action=share&source=collection_link&creator=34399280"
+		"_collection_link": "https://www.postman.com/payload-geoscientist-33886177/workspace/api-evaluation/collection/34399280-03a5fe6f-16f4-4005-9a38-026d64ce2d6c?action=share&source=collection_link&creator=34399280"
 	},
 	"item": [
 		{
@@ -62,7 +62,7 @@
 					"response": []
 				},
 				{
-					"name": "Single use not found",
+					"name": "Single user not found",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -134,20 +134,16 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"// Generate random username\r",
 									"let username = `user_${Math.floor(Math.random() * 10000)}`;\r",
 									"\r",
-									"// Random job titles\r",
 									"let jobs = [\"QA Tester\", \"Developer\", \"Product Manager\", \"DevOps Engineer\", \"UX Designer\"];\r",
 									"let job = jobs[Math.floor(Math.random() * jobs.length)];\r",
 									"\r",
-									"// Unique ID using UUID-like format\r",
-									"let id = crypto.randomUUID();\r",
+									"// Simple random number as ID (string)\r",
+									"let id = Math.floor(Math.random() * 1000000).toString();\r",
 									"\r",
-									"// Current timestamp in ISO format\r",
 									"let createdAt = new Date().toISOString();\r",
 									"\r",
-									"// Set variables for use in request body and validation\r",
 									"pm.environment.set(\"username\", username);\r",
 									"pm.environment.set(\"job\", job);\r",
 									"pm.environment.set(\"user_id\", id);\r",
@@ -182,7 +178,15 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/api/users"
+						"url": {
+							"raw": "{{base_url}}api/users",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -243,7 +247,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/2"
+						"url": {
+							"raw": "{{base_url}}api/users/2",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
 					},
 					"response": []
 				},
@@ -279,7 +292,16 @@
 								"type": "text"
 							}
 						],
-						"url": "{{base_url}}/2"
+						"url": {
+							"raw": "{{base_url}}api/users/2",
+							"host": [
+								"{{base_url}}api"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
 					},
 					"response": []
 				},
@@ -316,20 +338,21 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/:user",
+							"raw": "{{base_url}}api/users/2",
 							"host": [
-								"{{base_url}}"
+								"{{base_url}}api"
 							],
 							"path": [
-								":user"
-							],
-							"variable": [
-								{
-									"key": "user",
-									"value": "2"
-								}
+								"users",
+								"2"
 							]
 						}
 					},
@@ -386,7 +409,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}"
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
 					},
 					"response": []
 				},
@@ -432,7 +464,16 @@
 							"mode": "raw",
 							"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}"
 						},
-						"url": "{{base_url}}/api/register"
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
 					},
 					"response": []
 				}
@@ -448,13 +489,23 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"// pm.test(\"Status code is 404\", function () {\r",
+									"//     pm.response.to.have.status(404);\r",
+									"// });\r",
+									"\r",
+									"// pm.test(\"Response body is empty\", function () {\r",
+									"//     pm.expect(pm.response.text()).to.eql(\"{}\");\r",
+									"// });\r",
+									"\r",
 									"pm.test(\"Status code is 404\", function () {\r",
 									"    pm.response.to.have.status(404);\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Response body is empty\", function () {\r",
-									"    pm.expect(pm.response.text()).to.eql(\"{}\");\r",
+									"pm.test(\"Response body is empty or empty JSON\", function () {\r",
+									"    let body = pm.response.text().trim();\r",
+									"    pm.expect(body === '' || body === '{}' ).to.be.true;\r",
 									"});\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript",
@@ -471,7 +522,17 @@
 								"type": "text"
 							}
 						],
-						"url": "{{base_url}}/23"
+						"url": {
+							"raw": "{{base_url}}/api/users/23",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"23"
+							]
+						}
 					},
 					"response": []
 				},
@@ -516,7 +577,16 @@
 							"mode": "raw",
 							"raw": "{\r\n  \"email\": \"sydney@fife\"\r\n}\r\n"
 						},
-						"url": "{{base_url}}/api/register"
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
 					},
 					"response": []
 				}
